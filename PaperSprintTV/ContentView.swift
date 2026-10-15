@@ -1,24 +1,24 @@
-//
-//  ContentView.swift
-//  PaperSprintTV
-//
-//  Created by STUDENT on 2026-10-15.
-//
-
 import SwiftUI
 
 struct ContentView: View {
+    @State private var path: [TVRoute] = []
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack(path: $path) {
+            TVHomeView(start: { path.append(.setup) }, instructions: { path.append(.instructions) })
+                .navigationDestination(for: TVRoute.self) { route in
+                    switch route {
+                    case .setup: MatchSetupView { path.removeAll() }
+                    case .instructions: InstructionsView()
+                    }
+                }
         }
-        .padding()
+        .tint(TVTheme.mint)
     }
 }
 
-#Preview {
-    ContentView()
+private enum TVRoute: Hashable {
+    case setup, instructions
 }
+
+#Preview { ContentView() }
